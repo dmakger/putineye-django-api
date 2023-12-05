@@ -14,7 +14,29 @@ class People(models.Model):
         verbose_name_plural = "Пользователи"
 
     def __str__(self):
-        return f"{self.fio} [{self.phone}]"
+        return f"{self.get_name()} [{self.phone}]"
+
+    def get_name(self):
+        name = self.fio
+        if name is None:
+            name = self.telegram_name
+        if name is None:
+            name = self.telegram_id
+        return name
+
+
+
+class PeopleToMessage(models.Model):
+    people = models.ForeignKey(People, on_delete=models.CASCADE, verbose_name='Пользователь')
+    chat = models.CharField('ID чата', max_length=128)
+    created_at = models.DateTimeField('Дата регистрации')
+
+    class Meta:
+        verbose_name = "Последнее сообщение пользователя"
+        verbose_name_plural = "Последние сообщения пользователей"
+
+    def __str__(self):
+        return f"{self.people} {self.created_at}"
 
 
 class Admin(models.Model):

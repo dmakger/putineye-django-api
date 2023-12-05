@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import People, Admin, PeopleToBans, Ban
+from .models import People, Admin, PeopleToBans, Ban, PeopleToMessage
 
 
 # ===============
@@ -50,4 +50,13 @@ class PeopleToBanSerializer(serializers.ModelSerializer):
 class PeopleToBanFuncSerializer(serializers.ModelSerializer):
     class Meta:
         model = PeopleToBans
+        fields = '__all__'
+
+
+# ===========================
+#      PeopleToMessage
+# ===========================
+class PeopleToMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PeopleToMessage
         fields = '__all__'

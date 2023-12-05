@@ -30,7 +30,7 @@ class AddAdminAPIView(APIView):
 
     def post(self, request):
         serializer = AdminFuncSerializer(data=request.data)
-        if serializer.is_valid():
+        if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         qs = Admin.objects.filter(people__id=request.data.get('people'))
@@ -45,8 +45,8 @@ class AddAdminAPIView(APIView):
 class UpdateAdminAPIView(APIView):
     permission_classes = [AllowAny]
 
-    def put(self, request, pk):
-        person = Admin.objects.get(pk=pk)
+    def put(self, request, people_id):
+        person = Admin.objects.get(people__id=people_id)
         serializer = AdminFuncSerializer(person, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -59,13 +59,12 @@ class RemoveAdminView(APIView):
     permission_classes = [AllowAny]
 
     def delete(self, request, people_id):
-        try:
-            admin = Admin.objects.get(people__id=people_id)
-        except Exception:
+        qs = Admin.objects.filter(people__id=people_id)
+        if len(qs) == 0:
             return Response({"detail": "Админ с указанным пользователем не найден"}, status=status.HTTP_404_NOT_FOUND)
 
-        admin.delete()
-        return Response({"detail": "Админ успешно удален"}, status=status.HTTP_204_NO_CONTENT)
+        qs.delete()
+        return Response({"detail": "Админ успешно удален"}, status=status.HTTP_200_OK)
 
 
 # ЯВЛЯЕТСЯ ЛИ ПОЛЬЗОВАТЕЛЬ АДМИНОМ

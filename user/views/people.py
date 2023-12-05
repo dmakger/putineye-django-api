@@ -52,7 +52,6 @@ class AddPersonAPIView(APIView):
         return Response({'is_valid': is_valid,**serializer.data}, status=status.HTTP_201_CREATED)
 
 
-
 # ОБНОВЛЕНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ
 class UpdatePersonAPIView(APIView):
     permission_classes = [AllowAny]
@@ -64,3 +63,31 @@ class UpdatePersonAPIView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# ПОЛУЧЕНИЕ ПОЛЬЗОВАТЕЛЯ
+class GetDetailPeopleAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        qs = People.objects.filter(**request.data)
+        if len(qs) == 0:
+            return Response({'message': 'Такого пользователя не существует'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = PeopleSerializer(qs[0])
+        return Response(serializer.data)
+
+
+# СУЩЕСТВУЕТ ЛИ ЧЕЛОВЕК
+class IsExistsPeopleAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        people_list = People.objects.filter(**request.data)
+        people_id = None
+        if len(people_list) > 0:
+            people_id = people_list[0].id
+        return Response({
+            "is_exists": len(people_list) > 0,
+            "id": people_id,
+        }, status=status.HTTP_200_OK)
+

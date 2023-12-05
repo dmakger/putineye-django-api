@@ -2,11 +2,15 @@ from django.contrib import admin
 
 
 #  Пользователь
-from user.models import PeopleToBans, People, Admin, Ban
+from user.models import PeopleToBans, People, Admin, Ban, PeopleToMessage
 
 
 class PeopleAdmin(admin.ModelAdmin):
     list_display = ['fio', 'phone', 'telegram_id', 'telegram_name', 'created_at']
+
+
+class PeopleToMessageAdmin(admin.ModelAdmin):
+    list_display = ['people', 'chat', 'created_at']
 
 
 #  Админ
@@ -25,6 +29,7 @@ class PeopleToBansAdmin(admin.ModelAdmin):
 
 
 admin.site.register(People, PeopleAdmin)
+admin.site.register(PeopleToMessage, PeopleToMessageAdmin)
 admin.site.register(Admin, AdminAdmin)
 admin.site.register(Ban, BanAdmin)
 admin.site.register(PeopleToBans, PeopleToBansAdmin)

@@ -54,8 +54,8 @@ class IsValidPeopleToBanAPIView(APIView):
 class UpdatePeopleToBanAPIView(APIView):
     permission_classes = [AllowAny]
 
-    def put(self, request, pk):
-        person = PeopleToBans.objects.get(pk=pk)
+    def put(self, request, people_id):
+        person = PeopleToBans.objects.get(people__id=people_id)
         serializer = PeopleToBanFuncSerializer(person, data=request.data)
         if serializer.is_valid():
             serializer.save()
