@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from user.models import Admin
+from user.models import Admin, People, PeopleToBans
 from user.serializers import AdminSerializer, AdminFuncSerializer
 
 
@@ -36,8 +36,15 @@ class AddAdminAPIView(APIView):
         qs = Admin.objects.filter(people__id=request.data.get('people'))
         if len(qs) > 0:
             return Response({'message': 'Такой пользователь уже является админом'}, status=status.HTTP_200_OK)
-
         serializer.save()
+
+        # Является ли пользователь забаненным
+        people_id = serializer.data.get('people')
+        user = People.objects.get(pk=people_id)
+        # Проверяем, является ли пользователь забаненным
+        banned_qs = PeopleToBans.objects.filter(people=user)
+        if banned_qs.exists():
+            banned_qs.delete()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 

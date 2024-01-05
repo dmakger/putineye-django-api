@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import People, Admin, PeopleToBans, Ban, PeopleToMessage
+from .models import People, Admin, PeopleToBans, Ban, PeopleToMessage, YellowLeaf
 
 
 # ===============
@@ -59,4 +59,22 @@ class PeopleToBanFuncSerializer(serializers.ModelSerializer):
 class PeopleToMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PeopleToMessage
+        fields = '__all__'
+
+
+# ===========================
+#        YellowLeaf
+# ===========================
+class YellowLeafSerializer(serializers.ModelSerializer):
+    people = PeopleSerializer()
+    ban = BanSerializer()
+
+    class Meta:
+        model = YellowLeaf
+        fields = '__all__'
+
+
+class YellowLeafFuncSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = YellowLeaf
         fields = '__all__'

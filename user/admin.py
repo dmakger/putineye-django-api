@@ -1,8 +1,7 @@
 from django.contrib import admin
 
-
 #  Пользователь
-from user.models import PeopleToBans, People, Admin, Ban, PeopleToMessage
+from user.models import PeopleToBans, People, Admin, Ban, PeopleToMessage, YellowLeaf
 
 
 class PeopleAdmin(admin.ModelAdmin):
@@ -28,8 +27,14 @@ class PeopleToBansAdmin(admin.ModelAdmin):
     list_display = ['people', 'ban', 'created_at']
 
 
+#  Желтый список
+class YellowLeafAdmin(admin.ModelAdmin):
+    list_display = ['people', 'ban', 'created_at']
+
+
 admin.site.register(People, PeopleAdmin)
 admin.site.register(PeopleToMessage, PeopleToMessageAdmin)
 admin.site.register(Admin, AdminAdmin)
 admin.site.register(Ban, BanAdmin)
 admin.site.register(PeopleToBans, PeopleToBansAdmin)
+admin.site.register(YellowLeaf, YellowLeafAdmin)

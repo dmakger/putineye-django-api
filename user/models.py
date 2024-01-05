@@ -29,7 +29,7 @@ class People(models.Model):
 class PeopleToMessage(models.Model):
     people = models.ForeignKey(People, on_delete=models.CASCADE, verbose_name='Пользователь')
     chat = models.CharField('ID чата', max_length=128)
-    created_at = models.DateTimeField('Дата регистрации')
+    created_at = models.DateTimeField('Дата последнего сообщения')
 
     class Meta:
         verbose_name = "Последнее сообщение пользователя"
@@ -60,6 +60,33 @@ class Ban(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class YellowLeaf(models.Model):
+    people = models.ForeignKey(People, on_delete=models.CASCADE, verbose_name='Пользователь')
+    ban = models.ForeignKey(Ban, on_delete=models.CASCADE, verbose_name='Вид возможного банна', blank=True, null=True,
+                            default=None)
+    created_at = models.DateTimeField('Дата добавления', auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Желтый список"
+        verbose_name_plural = "Желтый список"
+
+    def __str__(self):
+        return f"{self.people.fio} [{self.people.phone}] [{self.ban}]"
+
+    def clean(self):
+        if self.ban is None or self.ban == '':
+            default_ban_list = Ban.objects.filter(id=3)
+            default_ban = None
+            if len(default_ban_list) > 0:
+                default_ban = default_ban_list[0]
+            self.ban = default_ban
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
 
 
 class PeopleToBans(models.Model):
