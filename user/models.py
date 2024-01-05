@@ -25,7 +25,14 @@ class People(models.Model):
         return name
 
 
-class OldDataPeople(People):
+class OldDataPeople(models.Model):
+    fio_old = models.CharField('Полное имя', max_length=128, null=True, blank=True)
+    telegram_id_old = models.CharField('ID пользователя в Телеграмме', max_length=128)
+
+    telegram_name_old = models.CharField('Имя пользователя в Телеграмме', max_length=128, null=True, blank=True)
+    phone_old = models.CharField('Номер телефона', max_length=128, null=True, blank=True)
+    created_at_old = models.DateTimeField('Дата регистрации')
+
     people = models.ForeignKey(People, on_delete=models.CASCADE, verbose_name='Пользователь',
                                related_name='old_data_people')
     changed_at = models.DateTimeField('Дата смены данных пользователя', auto_now_add=True)

@@ -9,7 +9,7 @@ class PeopleAdmin(admin.ModelAdmin):
 
 
 class OldDataPeopleAdmin(admin.ModelAdmin):
-    list_display = ['fio', 'phone', 'telegram_id', 'telegram_name', 'changed_at', 'people']
+    list_display = ['fio_old', 'telegram_id_old', 'telegram_name_old', 'phone_old', 'created_at_old', 'people', 'changed_at']
 
 
 class PeopleToMessageAdmin(admin.ModelAdmin):

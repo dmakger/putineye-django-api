@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -57,15 +58,15 @@ class UpdatePersonAPIView(APIView):
     permission_classes = [AllowAny]
 
     def put(self, request, pk):
-        person = People.objects.get(pk=pk)
+        person = get_object_or_404(People, id=pk)
         serializer = PeopleSerializer(person, data=request.data)
         if serializer.is_valid():
             old_data = OldDataPeople(
-                fio=person.fio,
-                telegram_id=person.telegram_id,
-                telegram_name=person.telegram_name,
-                phone=person.phone,
-                created_at=person.created_at,
+                fio_old=person.fio,
+                telegram_id_old=person.telegram_id,
+                telegram_name_old=person.telegram_name,
+                phone_old=person.phone,
+                created_at_old=person.created_at,
                 people=person,
             )
             old_data.save()
