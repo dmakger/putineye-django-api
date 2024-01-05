@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from user.models import People, PeopleToBans
+from user.models import People, PeopleToBans, OldDataPeople
 from user.serializers import PeopleSerializer
 from user.service.is_valid_user import BanHelper
 
@@ -60,6 +60,16 @@ class UpdatePersonAPIView(APIView):
         person = People.objects.get(pk=pk)
         serializer = PeopleSerializer(person, data=request.data)
         if serializer.is_valid():
+            old_data = OldDataPeople(
+                fio=person.fio,
+                telegram_id=person.telegram_id,
+                telegram_name=person.telegram_name,
+                phone=person.phone,
+                created_at=person.created_at,
+                people=person,
+            )
+            old_data.save()
+
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

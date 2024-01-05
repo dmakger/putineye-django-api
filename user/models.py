@@ -25,6 +25,18 @@ class People(models.Model):
         return name
 
 
+class OldDataPeople(People):
+    people = models.ForeignKey(People, on_delete=models.CASCADE, verbose_name='Пользователь',
+                               related_name='old_data_people')
+    changed_at = models.DateTimeField('Дата смены данных пользователя', auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Старые данные о пользователе"
+        verbose_name_plural = "Старые данные о пользователе"
+
+    def __str__(self):
+        return f"{self.get_name()} [{self.phone}]"
+
 
 class PeopleToMessage(models.Model):
     people = models.ForeignKey(People, on_delete=models.CASCADE, verbose_name='Пользователь')
@@ -86,7 +98,6 @@ class YellowLeaf(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
-
 
 
 class PeopleToBans(models.Model):

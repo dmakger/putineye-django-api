@@ -1,11 +1,15 @@
 from django.contrib import admin
 
 #  Пользователь
-from user.models import PeopleToBans, People, Admin, Ban, PeopleToMessage, YellowLeaf
+from user.models import PeopleToBans, People, Admin, Ban, PeopleToMessage, YellowLeaf, OldDataPeople
 
 
 class PeopleAdmin(admin.ModelAdmin):
     list_display = ['fio', 'phone', 'telegram_id', 'telegram_name', 'created_at']
+
+
+class OldDataPeopleAdmin(admin.ModelAdmin):
+    list_display = ['fio', 'phone', 'telegram_id', 'telegram_name', 'changed_at', 'people']
 
 
 class PeopleToMessageAdmin(admin.ModelAdmin):
@@ -33,6 +37,7 @@ class YellowLeafAdmin(admin.ModelAdmin):
 
 
 admin.site.register(People, PeopleAdmin)
+admin.site.register(OldDataPeople, OldDataPeopleAdmin)
 admin.site.register(PeopleToMessage, PeopleToMessageAdmin)
 admin.site.register(Admin, AdminAdmin)
 admin.site.register(Ban, BanAdmin)
