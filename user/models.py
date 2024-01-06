@@ -42,7 +42,7 @@ class OldDataPeople(models.Model):
         verbose_name_plural = "Старые данные о пользователе"
 
     def __str__(self):
-        return f"{self.get_name()} [{self.phone}]"
+        return self.phone_old
 
 
 class PeopleToMessage(models.Model):

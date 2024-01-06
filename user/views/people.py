@@ -58,8 +58,10 @@ class UpdatePersonAPIView(APIView):
     permission_classes = [AllowAny]
 
     def put(self, request, pk):
+        print(request.data)
         person = get_object_or_404(People, id=pk)
         serializer = PeopleSerializer(person, data=request.data)
+        print(serializer.is_valid())
         if serializer.is_valid():
             old_data = OldDataPeople(
                 fio_old=person.fio,
@@ -73,6 +75,7 @@ class UpdatePersonAPIView(APIView):
 
             serializer.save()
             return Response(serializer.data)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -5,7 +5,7 @@ from user.models import PeopleToBans, People, Admin, Ban, PeopleToMessage, Yello
 
 
 class PeopleAdmin(admin.ModelAdmin):
-    list_display = ['fio', 'phone', 'telegram_id', 'telegram_name', 'created_at']
+    list_display = ['fio', 'id', 'phone', 'telegram_id', 'telegram_name', 'created_at']
 
 
 class OldDataPeopleAdmin(admin.ModelAdmin):
