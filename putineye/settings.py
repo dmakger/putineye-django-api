@@ -98,10 +98,21 @@ WSGI_APPLICATION = 'putineye.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
+    #  ==={ LOCAL. SQLITE }===
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # },
+
+    #  ==={ GLOBAL. MYSQL }===
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'dmakger_putineye',
+        'USER': 'dmakger_putineye',
+        'PASSWORD': '19EBD23!3wd4',
+        'HOST': 'dmakger.beget.tech',
+        'PORT': '3306',
+    },
 }
 
 # Password validation
