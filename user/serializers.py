@@ -48,9 +48,14 @@ class PeopleToBanSerializer(serializers.ModelSerializer):
 
 
 class PeopleToBanFuncSerializer(serializers.ModelSerializer):
+    telegram_id = serializers.SerializerMethodField()
+
     class Meta:
         model = PeopleToBans
         fields = '__all__'
+
+    def get_telegram_id(self, instance):
+        return instance.people.telegram_id
 
 
 # ===========================

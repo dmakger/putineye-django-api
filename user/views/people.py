@@ -85,7 +85,9 @@ class GetDetailPeopleAPIView(APIView):
 
     def get(self, request):
         qs = People.objects.filter(**request.data)
-        if len(qs) == 0:
+        print(request.data)
+        print(qs)
+        if len(request.data) == 0 or len(qs) == 0:
             return Response({'message': 'Такого пользователя не существует'}, status=status.HTTP_400_BAD_REQUEST)
         serializer = PeopleSerializer(qs[0])
         return Response(serializer.data)
