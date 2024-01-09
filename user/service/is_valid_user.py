@@ -1,5 +1,5 @@
 # Россия, Казахстан, Беларусь, Азербайджан, Aрмения, Крым
-from user.models import Ban
+from user.models import Ban, Number
 
 
 # БАНЫ
@@ -15,8 +15,9 @@ class BanHelper:
             start_index = 1
         phone_number = phone_number[start_index:]
 
-        for start_ph in self.SUCCESS_START_PHONE:
-            len_ph = len(str(start_ph))
+        for phone in Number.objects.filter(is_allowed=True):
+            start_ph = str(phone.start).strip()
+            len_ph = len(start_ph)
             if phone_number[:len_ph] == str(start_ph):
                 return True
         return False

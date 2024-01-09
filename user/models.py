@@ -88,8 +88,8 @@ class YellowLeaf(models.Model):
     created_at = models.DateTimeField('Дата добавления', auto_now_add=True)
 
     class Meta:
-        verbose_name = "Желтый список"
-        verbose_name_plural = "Желтый список"
+        verbose_name = "Список проверки"
+        verbose_name_plural = "Список проверки"
 
     def __str__(self):
         return f"{self.people.fio} [{self.people.phone}] [{self.ban}]"
@@ -131,3 +131,19 @@ class PeopleToBans(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
+
+
+class Number(models.Model):
+    country = models.CharField('Название страны', max_length=50)
+    start = models.CharField('Старт у номера', max_length=16, help_text='Писать без будто бы есть +. Т.е. код России "7"')
+    is_allowed = models.BooleanField('Разрешенный ли номер', default=False)
+
+    class Meta:
+        verbose_name = "Номер телефона"
+        verbose_name_plural = "Номера телефонов"
+
+    def __str__(self):
+        text_allowed = 'Нет доступа'
+        if self.is_allowed:
+            text_allowed = 'Доступ есть'
+        return f"{self.country} [+{self.start}] {text_allowed}"

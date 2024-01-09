@@ -58,10 +58,8 @@ class UpdatePersonAPIView(APIView):
     permission_classes = [AllowAny]
 
     def put(self, request, pk):
-        print(request.data)
         person = get_object_or_404(People, id=pk)
         serializer = PeopleSerializer(person, data=request.data)
-        print(serializer.is_valid())
         if serializer.is_valid():
             old_data = OldDataPeople(
                 fio_old=person.fio,
@@ -85,8 +83,6 @@ class GetDetailPeopleAPIView(APIView):
 
     def get(self, request):
         qs = People.objects.filter(**request.data)
-        print(request.data)
-        print(qs)
         if len(request.data) == 0 or len(qs) == 0:
             return Response({'message': 'Такого пользователя не существует'}, status=status.HTTP_400_BAD_REQUEST)
         serializer = PeopleSerializer(qs[0])
