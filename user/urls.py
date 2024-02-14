@@ -1,7 +1,8 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from user.views.admin import AllAdminAPIView, AddAdminAPIView, UpdateAdminAPIView, RemoveAdminView, IsAdminAPIView
+from user.views.admin import AllAdminAPIView, AddAdminAPIView, UpdateAdminAPIView, RemoveAdminView, IsAdminAPIView, \
+    IsAdminByTelegramIdAPIView
 from user.views.ban import AllPeopleToBanAPIView, AddPeopleToBanAPIView, UpdatePeopleToBanAPIView, \
     RemovePeopleToBanView, IsBannedPeopleToBanAPIView
 from user.views.people import AllPeopleAPIView, AddPersonAPIView, UpdatePersonAPIView, GetDetailPeopleAPIView, \
@@ -29,6 +30,7 @@ urlpatterns = [
     path('admin/update/<int:people_id>/', UpdateAdminAPIView.as_view(), name='update_admin_api'),
     path('admin/remove/<int:people_id>/', RemoveAdminView.as_view(), name='remove_admin_api'),
     path('admin/is_admin/<int:people_id>/', IsAdminAPIView.as_view(), name='is_admin_api'),
+    path('admin/is_admin_by_tg_id/<int:telegram_id>/', IsAdminByTelegramIdAPIView.as_view(), name='is_admin_by_tg_id_api'),
 
     # BAN
     path('ban/all/', AllPeopleToBanAPIView.as_view(), name='all_ban_api'),

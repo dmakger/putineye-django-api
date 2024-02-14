@@ -81,3 +81,12 @@ class IsAdminAPIView(APIView):
     def get(self, request, people_id):
         people_list = Admin.objects.filter(people__id=people_id)
         return Response({"is_admin": len(people_list) > 0}, status=status.HTTP_200_OK)
+
+
+# ЯВЛЯЕТСЯ ЛИ ПОЛЬЗОВАТЕЛЬ АДМИНОМ
+class IsAdminByTelegramIdAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, telegram_id):
+        people_list = Admin.objects.filter(people__telegram_id=telegram_id)
+        return Response({"is_admin": len(people_list) > 0}, status=status.HTTP_200_OK)
