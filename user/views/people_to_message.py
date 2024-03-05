@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from django.db.models import QuerySet
 from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -8,6 +9,7 @@ from rest_framework.views import APIView
 
 from user.models import PeopleToMessage, Admin, PeopleToBans, YellowLeaf
 from user.serializers import PeopleToMessageSerializer
+from user.service.ban import BanVariables, BanHelper
 
 
 # ДОБАВДЕНИЕ ЗАПИСИ, ЧТО ЧЕЛОВЕК НАПИСАЛ СООБЩЕНИЕ
@@ -62,18 +64,19 @@ class AutoBanTimeAPIView(APIView):
         if days is None:
             return HttpResponse("Invalid 'days' parameter")
         days_ago = datetime.now() - timedelta(days=days)
-        qs = PeopleToMessage.objects.filter(created_at__gte=days_ago)
-
+        # Получение сообщений до "days_ago"
+        qs: QuerySet[PeopleToMessage] = PeopleToMessage.objects.filter(created_at__lte=days_ago)
+        # Исключение пользователей, которые являются админами
+        qs_n = qs.exclude(people__admin__isnull=False)
+        # Получение всех пользователей которые уже находятся в "Желтом списке"
+        existing_users = YellowLeaf.objects.values('people')
+        # Исключение всех пользователей которые уже находятся в "Желтом списке"
+        not_existing_users: QuerySet[PeopleToMessage] = qs_n.exclude(people__in=existing_users)
         new_banned_user_list = []
-        # Баним каждого пользователя, если он не админ
-        for user_to_ban in qs:
-            user = user_to_ban.people
-
-            # Проверяем, не является ли пользователь админом
-            if not Admin.objects.filter(people=user).exists():
-                # Создаем запись в таблице PeopleToBans
-                new_banned_user = YellowLeaf.objects.create(people=user, created_at=datetime.now())
-                new_banned_user_list.append(new_banned_user.id)
+        ban_helper = BanHelper()
+        for user in not_existing_users:
+            new_banned_user = YellowLeaf.objects.create(people=user.people, ban=ban_helper.inaction())
+            new_banned_user_list.append(new_banned_user.id)
         return Response(new_banned_user_list, status=status.HTTP_200_OK)
 
 
