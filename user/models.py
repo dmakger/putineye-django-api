@@ -4,9 +4,10 @@ from django.db import models
 class People(models.Model):
     fio = models.CharField('Полное имя', max_length=128, null=True, blank=True)
     telegram_id = models.CharField('ID пользователя в Телеграмме', max_length=128)
-
     telegram_name = models.CharField('Имя пользователя в Телеграмме', max_length=128, null=True, blank=True)
     phone = models.CharField('Номер телефона', max_length=128, null=True, blank=True)
+    has_immune = models.BooleanField('Имунитет к автобану', default=False)
+    donated = models.BooleanField('Донатил ли', default=False)
     created_at = models.DateTimeField('Дата регистрации', auto_now_add=True)
 
     class Meta:
