@@ -58,24 +58,46 @@ class IsExistsPeopleToMessageAPIView(APIView):
 # ДОБАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯ В yellow_place, ЕСЛИ В ТЕЧЕНИИ :days НЕ БЫЛ АКТИВЕН ПОЛЬЗОВАТЕЛЬ
 class AutoBanTimeAPIView(APIView):
     permission_classes = [AllowAny]
+    ban_helper = BanHelper()
 
-    def put(self, request):
-        days = request.data.get('days', None)
-        if days is None:
-            return HttpResponse("Invalid 'days' parameter")
+    # Получение пользователей, которые могут быть забаннены
+    def get_users_suitable_users(self, days: int):
         days_ago = datetime.now() - timedelta(days=days)
         # Получение сообщений до "days_ago"
         qs: QuerySet[PeopleToMessage] = PeopleToMessage.objects.filter(created_at__lte=days_ago)
-        # Исключение пользователей, которые являются админами
-        qs_n = qs.exclude(people__admin__isnull=False)
+        # Исключение из списка пользователей: админы, с иммунитетом, которые донатили
+        qs_n = qs.exclude(people__admin__isnull=False, people__has_immune=True, people__donated=True)
+        return qs_n
+
+    def post(self, request):
+        print('auto_ban')
+        days = request.data.get('days', None)
+        if days is None:
+            return HttpResponse("Invalid 'days' parameter")
+        qs_n = self.get_users_suitable_users(days)
+        # Получение всех пользователей которые уже "Забанены"
+        existing_users = PeopleToBans.objects.values('people')
+        # Исключение всех пользователей которые "Забанены"
+        not_existing_users: QuerySet[PeopleToMessage] = qs_n.exclude(people__in=existing_users)
+        new_banned_user_list = []
+        for user in not_existing_users:
+            new_banned_user = PeopleToBans.objects.create(people=user.people, ban=self.ban_helper.inaction())
+            new_banned_user_list.append(new_banned_user.id)
+        return Response(new_banned_user_list, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        print('auto_yellowleaf')
+        days = request.data.get('days', None)
+        if days is None:
+            return HttpResponse("Invalid 'days' parameter")
+        qs_n = self.get_users_suitable_users(days)
         # Получение всех пользователей которые уже находятся в "Желтом списке"
         existing_users = YellowLeaf.objects.values('people')
         # Исключение всех пользователей которые уже находятся в "Желтом списке"
         not_existing_users: QuerySet[PeopleToMessage] = qs_n.exclude(people__in=existing_users)
         new_banned_user_list = []
-        ban_helper = BanHelper()
         for user in not_existing_users:
-            new_banned_user = YellowLeaf.objects.create(people=user.people, ban=ban_helper.inaction())
+            new_banned_user = YellowLeaf.objects.create(people=user.people, ban=self.ban_helper.inaction())
             new_banned_user_list.append(new_banned_user.id)
         return Response(new_banned_user_list, status=status.HTTP_200_OK)
 

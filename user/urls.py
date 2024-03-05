@@ -53,6 +53,7 @@ urlpatterns = [
          name='update_people_to_message_api'),
     path('message/is_exists/<int:people_id>/', IsExistsPeopleToMessageAPIView.as_view(),
          name='is_exists_people_to_message_api'),
-    path('message/auto_ban/', AutoBanTimeAPIView.as_view(), name='auto_ban_api'),
+    path('message/auto_yellow_leaf/', AutoBanTimeAPIView.as_view(), name='auto_yellow_leaf'),
+    path('message/auto_ban/', AutoBanTimeAPIView.as_view(), name='auto_ban'),
     path('message/tg_chat/', UniqueChatAPIView.as_view(), name='get_tg_chat_api'),
 ]
